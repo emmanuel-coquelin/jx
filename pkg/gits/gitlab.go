@@ -101,7 +101,7 @@ func (g *GitlabProvider) CreateRepository(org string, name string, private bool)
 	}
 
 	p := &gitlab.CreateProjectOptions{
-		Name:       &name,
+		Path:       &name,
 		Visibility: &visibility,
 	}
 
