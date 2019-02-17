@@ -126,11 +126,12 @@ func ParseGitURL(text string) (*GitRepository, error) {
 		t = strings.TrimSuffix(t, ".git")
 
 		arr := util.RegexpSplit(t, ":|/")
+
 		if len(arr) >= 3 {
 			answer.Scheme = "git"
 			answer.Host = arr[0]
 			answer.Organisation = arr[1]
-			answer.Name = arr[2]
+			answer.Name = arr[len(arr)-1]
 			return &answer, nil
 		}
 	}
@@ -158,7 +159,7 @@ func parsePath(path string, info *GitRepository) (*GitRepository, error) {
 		// We're assuming the beginning of the path is of the form /<org>/<repo>
 		info.Organisation = arr[0]
 		info.Project = arr[0]
-		info.Name = arr[1]
+		info.Name = arr[len(arr)-1]
 
 		return info, nil
 	}
