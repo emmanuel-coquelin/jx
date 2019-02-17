@@ -178,6 +178,7 @@ func (options *ImportOptions) addImportFlags(cmd *cobra.Command, createProject b
 		return text
 	}
 	cmd.Flags().StringVarP(&options.Organisation, "org", "", "", "Specify the Git provider organisation to import the project into (if it is not already in one)")
+	cmd.Flags().StringVarP(&options.AppName, "app-name", "", "", "Specify the app-name to use for your pipeline")
 	cmd.Flags().StringVarP(&options.Repository, "name", "", notCreateProject("n"), "Specify the Git repository name to import the project into (if it is not already in one)")
 	cmd.Flags().StringVarP(&options.Credentials, "credentials", notCreateProject("c"), "", "The Jenkins credentials name used by the job")
 	cmd.Flags().StringVarP(&options.Jenkinsfile, "jenkinsfile", notCreateProject("j"), "", "The name of the Jenkinsfile to use. If not specified then 'Jenkinsfile' will be used")
