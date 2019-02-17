@@ -139,7 +139,6 @@ func (g *GitlabProvider) ListOrganisations() ([]GitOrganisation, error) {
 
 	var organizations []GitOrganisation
 	for _, v := range groups {
-		log.Info(groups)
 		organizations = append(organizations, GitOrganisation{v.FullPath})
 	}
 	return organizations, nil
