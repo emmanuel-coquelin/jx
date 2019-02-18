@@ -95,14 +95,21 @@ func fromGitlabProject(p *gitlab.Project) *GitRepository {
 }
 
 func (g *GitlabProvider) CreateRepository(org string, name string, private bool) (*GitRepository, error) {
-	visibility := gitlab.PublicVisibility
+	// Finds the group corresponding to the full path
+	group, err := findGroup(g.Client, org)
+
+	var visibility *gitlab.VisibilityValue
 	if private {
-		visibility = gitlab.PrivateVisibility
+		private := gitlab.PrivateVisibility
+		visibility = &private
+	} else {
+		visibility = group.Visibility
 	}
 
 	p := &gitlab.CreateProjectOptions{
-		Path:       &name,
-		Visibility: &visibility,
+		Name:        &name,
+		NamespaceID: &group.ID,
+		Visibility:  visibility,
 	}
 
 	project, _, err := g.Client.Projects.CreateProject(p)
@@ -142,6 +149,26 @@ func (g *GitlabProvider) ListOrganisations() ([]GitOrganisation, error) {
 		organizations = append(organizations, GitOrganisation{v.FullPath})
 	}
 	return organizations, nil
+}
+
+func findGroup(g *gitlab.Client, fullPath string) (*gitlab.Group, error) {
+
+	options := &gitlab.ListGroupsOptions{}
+
+	groups, _, err := g.Groups.ListGroups(options)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, v := range groups {
+		log.Infoln("group fullpath is " + v.FullPath)
+		if v.FullPath == fullPath {
+			log.Infof("returning %s", v.ID)
+			return v, nil
+		}
+	}
+
+	return nil, nil
 }
 
 func (g *GitlabProvider) projectId(org, username, name string) (string, error) {
